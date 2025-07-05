@@ -49,20 +49,38 @@
             }
         }
 
-        /* Video Controls Styles */
+        /* YouTube Video Container Styles */
         .video-container {
             position: relative;
             border-radius: 0.5rem;
             overflow: hidden;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             z-index: 10;
-        }
-
-        .hero-video {
+            background: #000;
             width: 100%;
             height: 400px;
-            object-fit: cover;
+        }
+
+        .youtube-video {
+            width: 100%;
+            height: 100%;
+            border: none;
             border-radius: 0.5rem;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Invisible overlay to block YouTube's hover effects */
+        .video-interaction-blocker {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 15;
+            pointer-events: none;
+            cursor: pointer;
         }
 
         .video-overlay {
@@ -71,18 +89,21 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
+            background: linear-gradient(45deg, rgba(59, 130, 246, 0.05), rgba(147, 51, 234, 0.05));
             pointer-events: none;
+            z-index: 16;
         }
 
         .video-controls {
             position: absolute;
             bottom: 20px;
-            right: 20px;
+            left: 20px;
             display: flex;
             gap: 10px;
             opacity: 0;
             transition: opacity 0.3s ease;
+            z-index: 50;
+            pointer-events: auto;
         }
 
         .video-container:hover .video-controls {
@@ -150,6 +171,29 @@
             75% {
                 transform: translateY(10px) translateX(-12px);
             }
+        }
+
+        /* YouTube API Integration Styles */
+        .youtube-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            background: #000;
+            color: white;
+            border-radius: 0.5rem;
+        }
+
+        .youtube-error {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+            color: white;
+            border-radius: 0.5rem;
+            text-align: center;
         }
     </style>
 
@@ -220,50 +264,50 @@
                     </div>
                 </div>
                 <div class="relative">
-                    <!-- <img src="https://via.placeholder.com/600x400?text=AI+Robotics" alt="AI Robotics" class="rounded-lg shadow-2xl w-full"> -->
-                     <div class="relative">
-                    <!-- Video Container -->
+                    <!-- YouTube Video Container -->
                     <div class="video-container">
-                        <video 
-                            id="hero-video" 
-                            class="hero-video" 
-                            autoplay 
-                            muted 
-                            loop 
-                            playsinline
-                            poster="images/ravenex.png">
-                            <source src="vid.mp4" type="video/mp4">
-                            <source src="vid.mp4" type="video/webm">
-                            <!-- Fallback image if video doesn't load -->
-                            <img src="images/ravenex.png" alt="AI Robotics Demo" class="w-full h-full object-cover">
-                        </video>
+                        <!-- Replace YOUR_VIDEO_ID with your actual YouTube video ID -->
+                        <iframe 
+                            id="youtube-video"
+                            class="youtube-video" 
+                            src="https://www.youtube.com/embed/rc6TW8UUhOk?autoplay=1&mute=1&loop=1&playlist=rc6TW8UUhOk&rel=0&modestbranding=1&controls=0&showinfo=0&fs=1&iv_load_policy=3&enablejsapi=1"
+                            title="Ravenex Technologies - AI & Robotics Demo" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen>
+                        </iframe>
                         
                         <!-- Video overlay for visual effect -->
                         <div class="video-overlay"></div>
                         
-                        <!-- Video controls -->
+                        <!-- Custom Video controls -->
                         <div class="video-controls">
                             <button id="play-pause-btn" class="video-btn" title="Play/Pause">
                                 <i class="fas fa-pause"></i>
                             </button>
-                            <button id="mute-btn" class="video-btn" title="Mute/Unmute">
-                                <i class="fas fa-volume-up"></i>
+                            <button id="mute-btn" class="video-btn active" title="Mute/Unmute">
+                                <i class="fas fa-volume-mute"></i>
                             </button>
                             <button id="fullscreen-btn" class="video-btn" title="Fullscreen">
                                 <i class="fas fa-expand"></i>
                             </button>
                         </div>
                     </div>
+                    
+                    <!-- Fallback for when video fails to load -->
+                    <div id="video-fallback" class="youtube-error" style="display: none;">
+                        <i class="fas fa-play-circle text-6xl mb-4 text-blue-400"></i>
+                        <h3 class="text-xl font-bold mb-2">AI & Robotics Demo</h3>
+                        <p class="text-gray-300">Experience the future of technology</p>
+                    </div>
+                    
                     <div class="absolute -bottom-6 -left-6 bg-blue-500 w-24 h-24 rounded-full opacity-20 floating-circle"></div>
                     <div class="absolute -top-6 -right-6 bg-purple-500 w-32 h-32 rounded-full opacity-20 floating-circle-reverse"></div>
                 </div>
                 <div class="absolute top-20 left-10 bg-green-400 w-16 h-16 rounded-full opacity-15 floating-circle"></div>
-                <!-- <div class="absolute bottom-32 right-20 bg-yellow-400 w-20 h-20 rounded-full opacity-15 floating-circle-reverse"></div> -->
                 <div class="absolute top-1/2 left-1/4 bg-pink-400 w-12 h-12 rounded-full opacity-20 floating-circle-large"></div>
                 <div class="absolute top-1/3 right-1/3 bg-indigo-400 w-28 h-28 rounded-full opacity-10 floating-circle"></div>
                 <div class="absolute bottom-20 left-1/3 bg-red-400 w-18 h-18 rounded-full opacity-15 floating-circle-reverse"></div>
                 <div class="absolute top-3/4 right-10 bg-cyan-400 w-14 h-14 rounded-full opacity-20 floating-circle-large"></div>
-                <!-- <div class="absolute top-10 right-1/2 bg-orange-400 w-22 h-22 rounded-full opacity-12 floating-circle"></div> -->
             </div>
         </div>
     </section>
@@ -814,170 +858,206 @@
     </footer>
 
     <script>
-        // Video Controls JavaScript
-        document.addEventListener('DOMContentLoaded', function() {
-            const video = document.getElementById('hero-video');
+        // YouTube API and Video Controls
+        let player;
+        let isPlayerReady = false;
+
+        // Load YouTube IFrame API
+        function loadYouTubeAPI() {
+            const tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        }
+
+        // YouTube API ready callback
+        function onYouTubeIframeAPIReady() {
+            // Replace 'YOUR_VIDEO_ID' with your actual video ID
+            const videoId = 'rc6TW8UUhOk'; // Change this to your video ID
+            
+            player = new YT.Player('youtube-video', {
+                height: '400',
+                width: '100%',
+                videoId: videoId,
+                playerVars: {
+                    'autoplay': 1,
+                    'mute': 1,
+                    'loop': 1,
+                    'playlist': videoId,
+                    'rel': 0,
+                    'modestbranding': 1,
+                    'controls': 0,
+                    'showinfo': 0,
+                    'fs': 1,
+                    'iv_load_policy': 3,
+                    'enablejsapi': 1
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange,
+                    'onError': onPlayerError
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            isPlayerReady = true;
+            event.target.mute();
+            event.target.playVideo();
+            
+            // Update button states
+            document.getElementById('play-pause-btn').innerHTML = '<i class="fas fa-pause"></i>';
+            document.getElementById('mute-btn').innerHTML = '<i class="fas fa-volume-mute"></i>';
+            document.getElementById('mute-btn').classList.add('active');
+        }
+
+        function onPlayerStateChange(event) {
             const playPauseBtn = document.getElementById('play-pause-btn');
-            const muteBtn = document.getElementById('mute-btn');
-            const fullscreenBtn = document.getElementById('fullscreen-btn');
-
-            // Play/Pause functionality
-            playPauseBtn.addEventListener('click', function() {
-                if (video.paused) {
-                    video.play();
-                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    playPauseBtn.title = 'Pause';
-                } else {
-                    video.pause();
-                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-                    playPauseBtn.title = 'Play';
-                }
-            });
-
-            // Mute/Unmute functionality
-            muteBtn.addEventListener('click', function() {
-                if (video.muted) {
-                    video.muted = false;
-                    muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-                    muteBtn.title = 'Mute';
-                } else {
-                    video.muted = true;
-                    muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-                    muteBtn.title = 'Unmute';
-                }
-            });
-
-            // Fullscreen functionality
-            fullscreenBtn.addEventListener('click', function() {
-                if (video.requestFullscreen) {
-                    video.requestFullscreen();
-                } else if (video.webkitRequestFullscreen) {
-                    video.webkitRequestFullscreen();
-                } else if (video.mozRequestFullScreen) {
-                    video.mozRequestFullScreen();
-                } else if (video.msRequestFullscreen) {
-                    video.msRequestFullscreen();
-                }
-            });
-
-            // Update play/pause button when video ends
-            video.addEventListener('ended', function() {
+            
+            if (event.data == YT.PlayerState.PLAYING) {
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                playPauseBtn.title = 'Pause';
+            } else if (event.data == YT.PlayerState.PAUSED) {
                 playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
                 playPauseBtn.title = 'Play';
-            });
-
-            // Handle fullscreen change
-            document.addEventListener('fullscreenchange', function() {
-                if (document.fullscreenElement) {
-                    fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
-                    fullscreenBtn.title = 'Exit Fullscreen';
-                } else {
-                    fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
-                    fullscreenBtn.title = 'Fullscreen';
-                }
-            });
-
-            // Handle webkit fullscreen change (Safari)
-            document.addEventListener('webkitfullscreenchange', function() {
-                if (document.webkitFullscreenElement) {
-                    fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
-                    fullscreenBtn.title = 'Exit Fullscreen';
-                } else {
-                    fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
-                    fullscreenBtn.title = 'Fullscreen';
-                }
-            });
-
-            // Add click event to video for play/pause
-            video.addEventListener('click', function() {
-                if (video.paused) {
-                    video.play();
-                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                } else {
-                    video.pause();
-                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-                }
-            });
-        });
-
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        });
-
-        // Smooth scrolling function
-        function scrollToSection(targetId) {
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                window.scrollTo({
-                    top: targetElement.offsetTop - 80,
-                    behavior: 'smooth'
-                });
-                
-                // Close mobile menu if open
-                const mobileMenu = document.getElementById('mobile-menu');
-                if (!mobileMenu.classList.contains('hidden')) {
-                    mobileMenu.classList.add('hidden');
-                }
+            } else if (event.data == YT.PlayerState.ENDED) {
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                playPauseBtn.title = 'Play';
             }
         }
 
-        // Get Started buttons - scroll to Get in Touch section
-        document.getElementById('get-started-nav').addEventListener('click', function(e) {
-            e.preventDefault();
-            scrollToSection('#get-in-touch');
-        });
+        function onPlayerError(event) {
+            console.log('YouTube Player Error:', event.data);
+            // Show fallback
+            document.querySelector('.video-container').style.display = 'none';
+            document.getElementById('video-fallback').style.display = 'flex';
+        }
 
-        document.getElementById('get-started-mobile').addEventListener('click', function(e) {
-            e.preventDefault();
-            scrollToSection('#get-in-touch');
-        });
-
-        // Explore Solutions button - scroll to Industries section
-        document.getElementById('explore-solutions-btn').addEventListener('click', function(e) {
-            e.preventDefault();
-            scrollToSection('#industries');
-        });
-
-        // Watch Demo button - open YouTube channel
-        document.getElementById('watch-demo-btn').addEventListener('click', function(e) {
-            e.preventDefault();
-            // Replace with your YouTube channel URL
-            window.open('https://www.youtube.com/@iandai-1', '_blank');
-        });
-
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
+        // Custom control event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load YouTube API
+            loadYouTubeAPI();
+            
+            // Play/Pause button
+            document.getElementById('play-pause-btn').addEventListener('click', function() {
+                if (!isPlayerReady) return;
                 
-                const targetId = this.getAttribute('href');
-                scrollToSection(targetId);
+                const state = player.getPlayerState();
+                if (state === YT.PlayerState.PLAYING) {
+                    player.pauseVideo();
+                } else {
+                    player.playVideo();
+                }
+            });
+
+            // Mute/Unmute button
+            document.getElementById('mute-btn').addEventListener('click', function() {
+                if (!isPlayerReady) return;
+                
+                const muteBtn = this;
+                if (player.isMuted()) {
+                    player.unMute();
+                    muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                    muteBtn.title = 'Mute';
+                    muteBtn.classList.remove('active');
+                } else {
+                    player.mute();
+                    muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                    muteBtn.title = 'Unmute';
+                    muteBtn.classList.add('active');
+                }
+            });
+
+            // Fullscreen button
+            document.getElementById('fullscreen-btn').addEventListener('click', function() {
+                const iframe = document.getElementById('youtube-video');
+                
+                if (iframe.requestFullscreen) {
+                    iframe.requestFullscreen();
+                } else if (iframe.webkitRequestFullscreen) {
+                    iframe.webkitRequestFullscreen();
+                } else if (iframe.mozRequestFullScreen) {
+                    iframe.mozRequestFullScreen();
+                } else if (iframe.msRequestFullscreen) {
+                    iframe.msRequestFullscreen();
+                }
+            });
+
+            // Handle fullscreen changes
+            document.addEventListener('fullscreenchange', updateFullscreenButton);
+            document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+            document.addEventListener('mozfullscreenchange', updateFullscreenButton);
+            document.addEventListener('msfullscreenchange', updateFullscreenButton);
+
+            function updateFullscreenButton() {
+                const fullscreenBtn = document.getElementById('fullscreen-btn');
+                if (document.fullscreenElement || document.webkitFullscreenElement || 
+                    document.mozFullScreenElement || document.msFullscreenElement) {
+                    fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
+                    fullscreenBtn.title = 'Exit Fullscreen';
+                } else {
+                    fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                    fullscreenBtn.title = 'Fullscreen';
+                }
+            }
+
+            // Mobile menu toggle
+            document.getElementById('mobile-menu-button').addEventListener('click', function() {
+                const menu = document.getElementById('mobile-menu');
+                menu.classList.toggle('hidden');
+            });
+
+            // Smooth scrolling function
+            function scrollToSection(targetId) {
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            }
+
+            // Get Started buttons
+            document.getElementById('get-started-nav').addEventListener('click', function(e) {
+                e.preventDefault();
+                scrollToSection('#get-in-touch');
+            });
+
+            document.getElementById('get-started-mobile').addEventListener('click', function(e) {
+                e.preventDefault();
+                scrollToSection('#get-in-touch');
+            });
+
+            // Explore Solutions button
+            document.getElementById('explore-solutions-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                scrollToSection('#services');
+            });
+
+            // Watch Demo button
+            document.getElementById('watch-demo-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.open('https://www.youtube.com/@iandai-1', '_blank');
+            });
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    scrollToSection(targetId);
+                });
             });
         });
 
-        // Form submission
-        document.getElementById('contact-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form values
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const company = document.getElementById('company').value;
-            const message = document.getElementById('message').value;
-            
-            // Here you would typically send this data to your server
-            console.log('Form submitted:', { name, email, company, message });
-            
-            // Show success message
-            alert('Thank you for your message! We will get back to you soon.');
-            
-            // Reset form
-            this.reset();
-        });
-
-        // Animate elements on scroll
+        // Additional floating circle animations
         const observerOptions = {
             threshold: 0.1
         };
@@ -990,7 +1070,7 @@
             });
         }, observerOptions);
 
-        document.querySelectorAll('.service-card, .team-card').forEach(card => {
+        document.querySelectorAll('.service-card').forEach(card => {
             observer.observe(card);
         });
     </script>
@@ -1075,6 +1155,28 @@
             100% {
                 transform: translateY(0px) translateX(0px) rotate(360deg);
             }
+        }
+
+        .youtube-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            background: #000;
+            color: white;
+            border-radius: 0.5rem;
+        }
+
+        .youtube-error {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+            color: white;
+            border-radius: 0.5rem;
+            text-align: center;
         }
     </style>
 </body>
