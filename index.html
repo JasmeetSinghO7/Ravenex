@@ -117,8 +117,8 @@
                 </div>
                 <div class="relative">
                     <img src="https://via.placeholder.com/600x400?text=AI+Robotics" alt="AI Robotics" class="rounded-lg shadow-2xl w-full">
-                    <div class="absolute -bottom-6 -left-6 bg-blue-500 w-24 h-24 rounded-full opacity-20"></div>
-                    <div class="absolute -top-6 -right-6 bg-purple-500 w-32 h-32 rounded-full opacity-20"></div>
+                    <div class="absolute -bottom-6 -left-6 bg-blue-500 w-24 h-24 rounded-full opacity-20 floating-circle"></div>
+                    <div class="absolute -top-6 -right-6 bg-purple-500 w-32 h-32 rounded-full opacity-20 floating-circle-reverse"></div>
                 </div>
             </div>
         </div>
@@ -764,5 +764,45 @@
             observer.observe(card);
         });
     </script>
+
+    <style>
+        .floating-circle {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-circle-reverse {
+            animation: floatReverse 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) translateX(0px);
+            }
+            25% {
+                transform: translateY(-20px) translateX(10px);
+            }
+            50% {
+                transform: translateY(-10px) translateX(-15px);
+            }
+            75% {
+                transform: translateY(-25px) translateX(5px);
+            }
+        }
+
+        @keyframes floatReverse {
+            0%, 100% {
+                transform: translateY(0px) translateX(0px);
+            }
+            25% {
+                transform: translateY(15px) translateX(-10px);
+            }
+            50% {
+                transform: translateY(25px) translateX(8px);
+            }
+            75% {
+                transform: translateY(10px) translateX(-12px);
+            }
+        }
+    </style>
 </body>
 </html>
